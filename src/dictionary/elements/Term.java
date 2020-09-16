@@ -185,7 +185,7 @@ public class Term {
             if (rs.next()) {
                 System.out.println(rs.getString("id") + " " + rs.getString("palabra") + " " + rs.getString("definicion"));
             } else {
-                JOptionPane.showMessageDialog(null, "No se encotró la palabra en el diccionario");
+                JOptionPane.showMessageDialog(null, "Buscando en diccionarios anigos");
             }
 
         } catch (Exception e) {

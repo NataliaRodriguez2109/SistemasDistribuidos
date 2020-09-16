@@ -4,7 +4,6 @@
  * and open the template in the editor.
  */
 package dictionary.databases;
-
 import dictionary.elements.Term;
 import java.sql.Connection;
 import java.sql.DriverManager;
