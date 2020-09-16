@@ -21,7 +21,7 @@ public class MainServer {
             server = new Server();
             server.setController(controller);
             
-            server.receive();
+            server.receive("127.0.0.1");
         } 
         catch (IOException ex) {
             System.out.println("No se pudo iniciar el servidor: " + ex.getMessage());

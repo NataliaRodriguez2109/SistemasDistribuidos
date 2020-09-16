@@ -19,21 +19,18 @@ import java.sql.Statement;
  * @author nata_
  */
 public class Connection1 {
-    
-    public static Connection con;
-    
-    public static Connection getConection() {
-        try {
-            Class.forName("com.mysql.jdbc.Driver");
-            con=DriverManager.getConnection("jdbc:mysql://localhost:3306/diccionario", "root", "");
-            JOptionPane.showMessageDialog(null, "Conexión exitosa");
-        }
-        catch (Exception e) {
-            JOptionPane.showMessageDialog(null, "Error de conexión: " + e.getMessage());
-        }
-        
-        return con;
-    }  
-        
-}
 
+    private Connection conn = null;
+
+    public Connection getConection(String ip) {
+        try {
+            Class.forName("org.apache.derby.jdbc.ClientDriver");
+            conn = DriverManager.getConnection("jdbc:derby://"+ip+":1527/diccionario");
+            System.out.println("ON");
+        } catch (Exception e) {
+            System.out.println(e.toString());
+        }
+        return conn;
+    }
+
+}

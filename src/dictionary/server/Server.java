@@ -27,7 +27,7 @@ public class Server {
         socket = new DatagramSocket(PUERTO);
     }
     
-    public void receive() throws IOException
+    public void receive(String ip) throws IOException
     {
         while(true)
         {
@@ -50,7 +50,7 @@ public class Server {
                 if(order.startsWith("d "))
                 {
                     String resultado = 
-                            controller.action(order.substring(2));
+                            controller.action(order.substring(2), ip);
 
                     enviar(resultado,request.getAddress(), request.getPort());
                 }

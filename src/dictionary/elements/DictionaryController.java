@@ -17,35 +17,36 @@ public class DictionaryController {
     }
 
  
-    public String action(String order)
+    public String action(String order, String ip)
     {
+        
         System.out.println("Ingrese la operacion que quiere realizar = "+order);       
         
         String answer = "Indefinido";
         
         switch (order){
             case "agregar":
-                term.create();
+                term.create(ip);
                 answer = "Ok";
                 break;
                 
             case "listar":
-                term.list();
+                term.list(ip);
                 answer = "Ok";
                 break;
                 
             case "editar":            
-                term.update();
+                term.update(ip);
                 answer = "Ok";
                 break;
                 
             case "eliminar":
-                term.delete();
+                term.delete(ip);
                 answer = "Ok";
                 break;
                 
             case "buscar":
-                term.find();
+                term.find(ip);
                 answer = "Ok";
                 break;
         }

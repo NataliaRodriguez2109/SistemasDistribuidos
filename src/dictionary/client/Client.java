@@ -26,7 +26,7 @@ public class Client {
     
     public void send(String msj) throws UnknownHostException, IOException
     {
-        InetAddress host = InetAddress.getByName("127.0.0.1");		
+        InetAddress host = InetAddress.getByName("localhost");		
         int puerto = 135;	
         
         byte[] buffer = msj.getBytes();

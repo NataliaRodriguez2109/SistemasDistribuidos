@@ -21,6 +21,8 @@ public class Term {
     String word;
     String definition;
     String id = null;
+    Connection con;
+    
     
     Connection1 conection = new Connection1();
     PreparedStatement pst;
@@ -29,16 +31,13 @@ public class Term {
     ResultSet rs;
 
     public Term() {
-        this.word = word;
-        this.definition = definition;
+        
     }
-    
-    public void create(){
-        Connection con = null;
-
+    // es necesario
+    public void create(String ip){        
         try {
-            con = conection.getConection();
-            pst = con.prepareStatement("INSERT INTO terminos (palabra, definicion) VALUES (?, ?) ");
+            con = conection.getConection(ip);
+            pst = con.prepareStatement("INSERT INTO TERMINOs (id, palabra, definicion) VALUES (?, ?, ?) ");
             System.out.println("Por favor introduzca una palabra: ");
 
             Scanner scanW = new Scanner(System.in);
@@ -48,8 +47,9 @@ public class Term {
 
             Scanner scanD = new Scanner(System.in);
             definition = (scanD.nextLine());
-            pst.setString(1, word);
-            pst.setString(2, definition);
+            pst.setString(1,"0");
+            pst.setString(2, word);
+            pst.setString(3, definition);
 
             int res = pst.executeUpdate();
 
@@ -66,12 +66,12 @@ public class Term {
         }
     }
     
-    public void update(){
+    public void update(String ip){
         Connection con = null;
 
         try {
 
-            con = conection.getConection();
+            con = conection.getConection(ip);
 
             pst = con.prepareStatement("SELECT * FROM terminos WHERE palabra = ?");
             System.out.println("Ingrese la palabra a editar: ");
@@ -117,10 +117,10 @@ public class Term {
         }
     }
     
-    public void list() {
+    public void list(String ip) {
         Connection con = null;
         try {
-            con = conection.getConection();
+            con = conection.getConection(ip);
             st = con.createStatement();
             rs = st.executeQuery("SELECT * FROM terminos");
 
@@ -133,11 +133,11 @@ public class Term {
         }
     }
     
-    public void delete(){
+    public void delete(String ip){
         Connection con = null;
 
         try {
-            con = conection.getConection();
+            con = conection.getConection(ip);
             pst = con.prepareStatement("DELETE FROM terminos WHERE palabra=?");
             System.out.println("Ingrese la palabra a eliminar: ");
             Scanner scanW2 = new Scanner(System.in);
@@ -158,11 +158,11 @@ public class Term {
         }
     }
     
-    public void find(){
+    public void find(String ip){
         Connection con = null;
 
         try {
-            con = conection.getConection();
+            con = conection.getConection(ip);
             pst = con.prepareStatement("SELECT * FROM terminos WHERE palabra = ?");
             System.out.println("Ingrese la palabra a buscar: ");
             Scanner scanW4 = new Scanner(System.in);
