@@ -20,7 +20,7 @@ import javax.swing.JOptionPane;
 public class Term {
     String word;
     String definition;
-    String id = null;
+    String id = "0";
     Connection con;
     
     
