@@ -13,7 +13,7 @@ import java.io.IOException;
  * @author nata_
  */
 public class MainServer {
-    public static void main(String[] args){        
+    public static void main(String[] args) throws ClassNotFoundException{        
         Server server;
         DictionaryController controller = new DictionaryController();
         

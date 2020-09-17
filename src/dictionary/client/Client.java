@@ -5,7 +5,10 @@
  */
 package dictionary.client;
 
+import dictionary.elements.Paquete;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
@@ -17,35 +20,46 @@ import java.net.UnknownHostException;
  * @author nata_
  */
 public class Client {
-     private DatagramSocket socket;
-    
-    public Client() throws SocketException
-    {
+
+    private DatagramSocket socket;
+
+    public Client() throws SocketException {
         socket = new DatagramSocket();
     }
-    
-    public void send(String msj) throws UnknownHostException, IOException
-    {
-        InetAddress host = InetAddress.getByName("25.109.204.202");		
-        int puerto = 135;	
-        
-        byte[] buffer = msj.getBytes();        
-        DatagramPacket request = 
-                new DatagramPacket(buffer, buffer.length, host, puerto);
+
+    public void send(Paquete msj) throws UnknownHostException, IOException {
+        InetAddress host = InetAddress.getByName("127.0.0.1");
+        int puerto = 135;
+
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        ObjectOutputStream out = null;
+        byte[] yourBytes;
+        try {
+            out = new ObjectOutputStream(bos);
+            out.writeObject(msj);
+            out.flush();
+            yourBytes = bos.toByteArray();
+        } finally {
+            try {
+                bos.close();
+            } catch (IOException ex) {
+                // ignore close exception
+            }
+        }
+        DatagramPacket request
+                = new DatagramPacket(yourBytes, yourBytes.length, host, puerto);
 
         socket.send(request);
-        System.out.println(request.getData());
+
     }
-    
-    public String receive() throws IOException
-    {
+
+    public String receive() throws IOException {
         byte[] buffer = new byte[1000];
 
-        DatagramPacket request = 
-                new DatagramPacket(buffer, buffer.length);
+        DatagramPacket request
+                = new DatagramPacket(buffer, buffer.length);
 
         socket.receive(request);
-        
         return new String(request.getData()).trim();
     }
 }

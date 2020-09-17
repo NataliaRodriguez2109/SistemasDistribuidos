@@ -6,10 +6,13 @@
 package dictionary.elements;
 
 import dictionary.databases.Connection1;
+import java.sql.Array;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.Scanner;
 import javax.swing.JOptionPane;
 
@@ -18,56 +21,73 @@ import javax.swing.JOptionPane;
  * @author nata_
  */
 public class Term {
+
     String word;
     String definition;
     String id = null;
     Connection con;
-    
-    
+
     Connection1 conection = new Connection1();
     PreparedStatement pst;
-    
+
     Statement st;
     ResultSet rs;
 
-    public Term() {
-        
+    public String[] enlistarAmigos(String ip) throws SQLException {
+        Connection con = null;
+        ArrayList<String> address = new ArrayList();
+        try {
+            con = conection.getConection(ip);
+            st = con.createStatement();
+            rs = st.executeQuery("SELECT direccion FROM AMIGOS");
+
+            while (rs.next()) {
+
+                String direccion = rs.getString("direccion");
+                address.add(direccion);
+            }
+            con.close();
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "Error: " + e.getMessage());
+        }
+        String amigos[] = new String[address.size()];
+        for (int i = 0; i < address.size(); i++) {
+            amigos[i] = address.get(i);
+        }
+        return amigos;
     }
+
+    public Term() {
+
+    }
+
     // es necesario
-    public void create(String ip){        
+    public String create(String ip, String palabra, String def) {
         try {
             con = conection.getConection(ip);
             pst = con.prepareStatement("INSERT INTO TERMINOs (palabra, definicion) VALUES (?, ?) ");
-            System.out.println("Por favor introduzca una palabra: ");
+//            
 
-            Scanner scanW = new Scanner(System.in);
-            word = (scanW.nextLine()); //Invocamos un método sobre un objeto Scanner
-
-            System.out.println("Por favor introduzca la definición: ");
-
-            Scanner scanD = new Scanner(System.in);
-            definition = (scanD.nextLine());
-            
             //rs = con.g
-            pst.setString(1, word);
-            pst.setString(2, definition);
+            pst.setString(1, palabra);
+            pst.setString(2, def);
 
             int res = pst.executeUpdate();
 
             if (res > 0) {
-                JOptionPane.showMessageDialog(null, "Término Agregado");
+                con.close();
+                return "Término Agregado";
             } else {
-                JOptionPane.showMessageDialog(null, "Error al agregar Término");
+                con.close();
+                return "Error al agregar Término";
             }
 
-            con.close();
-
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, "Error: " + e.getMessage());
+            return "Error: " + e.getMessage();
         }
     }
-    
-    public void update(String ip){
+
+    public String update(String ip, Paquete p) {
         Connection con = null;
 
         try {
@@ -75,125 +95,127 @@ public class Term {
             con = conection.getConection(ip);
 
             pst = con.prepareStatement("SELECT * FROM TERMINOS WHERE palabra = ?");
-            System.out.println("Ingrese la palabra a editar: ");
-            Scanner scanWU = new Scanner(System.in);
-            String wordU = (scanWU.nextLine()); //Invocamos un método sobre un objeto Scanner
+            //Invocamos un método sobre un objeto Scanner
 
-            pst.setString(1, wordU);
+            pst.setString(1, p.arreglo[1]);
 
             rs = pst.executeQuery();
 
             if (rs.next()) {
                 id = rs.getString("id");
-                 pst = con.prepareStatement("UPDATE terminos SET palabra=?, definicion=? WHERE id=" + id);
-            System.out.println("Por favor introduzca la palabra con la edición: ");
-            Scanner scanW3 = new Scanner(System.in);
-            word = (scanW3.nextLine()); //Invocamos un método sobre un objeto Scanner
+                pst = con.prepareStatement("UPDATE terminos SET palabra=?, definicion=? WHERE id=" + id);
 
-            System.out.println("Por favor introduzca la definición: ");
+                pst.setString(1, p.arreglo[3]);
 
-            Scanner scanD2 = new Scanner(System.in);
-            definition = (scanD2.nextLine()); //Invocamos un método sobre un objeto Scanner
-            pst.setString(1, word);
-            pst.setString(2, definition);
+                pst.setString(2, p.arreglo[2]);
 
-            int res = pst.executeUpdate();
-            
-            if (res > 0){
-                JOptionPane.showMessageDialog(null, "Término Editado");
-                }
-                else {
-                    JOptionPane.showMessageDialog(null, "Error al editar Término");
+                int res = pst.executeUpdate();
+                con.close();
+                if (res > 0) {
+                    return "Término Editado";
+                } else {
+                    return "Error al editar Término";
                 }
             } else {
-                JOptionPane.showMessageDialog(null, "No se encotró la palabra en el diccionario");
+                con.close();
+                return "No se encotró la palabra en el diccionario";
             }
-            
-            con.close();
 
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, "Error: " + e.getMessage());
+            return "Error: " + e.getMessage();
         }
     }
-    
-    public void list(String ip) {
+
+    public String list(String ip) {
         Connection con = null;
         try {
             con = conection.getConection(ip);
             st = con.createStatement();
             rs = st.executeQuery("SELECT * FROM TERMINOS");
-
+            String li = "";
             while (rs.next()) {
-                System.out.println(rs.getInt("id") + " " + rs.getString("palabra") + " " + rs.getString("definicion"));
+                li = li + rs.getInt("id") + " " + rs.getString("palabra") + " " + rs.getString("definicion");
             }
             con.close();
+            if (li != "") {
+                return li;
+            } else {
+                return "Esta base de datos está vacía.";
+            }
+
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, "Error: " + e.getMessage());
+            return "Error: " + e.getMessage();
         }
+
     }
-    
-    public void delete(String ip){
+
+    public String delete(String ip, Paquete p) {
         Connection con = null;
 
         try {
             con = conection.getConection(ip);
             pst = con.prepareStatement("SELECT * FROM TERMINOS WHERE palabra = ?");
-            System.out.println("Ingrese la palabra a editar: ");
-            Scanner scanWU = new Scanner(System.in);
-            String word = (scanWU.nextLine()); //Invocamos un método sobre un objeto Scanner
 
-            pst.setString(1, word);
+            pst.setString(1, p.arreglo[1]);
 
             rs = pst.executeQuery();
-            
-            if(rs.next()){
+
+            if (rs.next()) {
                 pst = con.prepareStatement("DELETE FROM TERMINOS WHERE palabra=?");
-                pst.setString(1, word);
+                pst.setString(1, p.arreglo[1]);
 
                 int res = pst.executeUpdate();
-
+                con.close();
                 if (res > 0) {
-                    JOptionPane.showMessageDialog(null, "Término Eliminado");
+                    return "Término Eliminado";
                 } else {
-                    JOptionPane.showMessageDialog(null, "Error al eliminar Término");
+                    return "Error al eliminar Término";
                 }
+            } else {
+                con.close();
+                return "No se encontró el término";
             }
-            else {
-                JOptionPane.showMessageDialog(null, "No se encontró el término");
-            }
- 
-            con.close();
 
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, "Error: " + e.getMessage());
+            return "Error: " + e.getMessage();
         }
     }
-    
-    public String find(String ip){
+
+    public String find(String ip, Paquete p, String origen) {
         Connection con = null;
 
         try {
             con = conection.getConection(ip);
             pst = con.prepareStatement("SELECT * FROM TERMINOS WHERE palabra = ?");
-            System.out.println("Ingrese la palabra a buscar: ");
-            Scanner scanW4 = new Scanner(System.in);
-            word = (scanW4.nextLine());  //Invocamos un método sobre un objeto Scanner
-            pst.setString(1, word);
+            System.out.println(rs);
+            pst.setString(1, p.arreglo[1]);
 
             rs = pst.executeQuery();
 
             if (rs.next()) {
                 return rs.getString("id") + "-" + rs.getString("palabra") + ": " + rs.getString("definicion");
             } else {
-                return  "Buscando en diccionarios anigos";
+                String[] pala = enlistarAmigos(ip);
+                for (int i = 0; i < pala.length; i++) {
+                    if (pala[i] != origen) {
+                        System.out.println("buscando en: " + pala[i] + "");
+                    }
+                    String cadena = find(pala[i], p, ip);
+                    return cadena;
+
+                }
             }
 
         } catch (Exception e) {
-            return "Error: " + e.getMessage();
+            return "Error7: " + e;
         }
-        
+
     }
-   
+
+    public void crearSenuelo() {
+
+    }
+
     public String getWord() {
         return word;
     }
@@ -209,6 +231,5 @@ public class Term {
     public void setDefinition(String definition) {
         this.definition = definition;
     }
-    
-    
+
 }
