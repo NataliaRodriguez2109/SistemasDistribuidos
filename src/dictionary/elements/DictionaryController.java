@@ -46,8 +46,7 @@ public class DictionaryController {
                 break;
                 
             case "buscar":
-                term.find(ip);
-                answer = "Ok";
+                answer = term.find(ip);                
                 break;
         }
         

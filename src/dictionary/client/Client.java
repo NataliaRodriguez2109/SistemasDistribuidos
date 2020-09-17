@@ -26,15 +26,15 @@ public class Client {
     
     public void send(String msj) throws UnknownHostException, IOException
     {
-        InetAddress host = InetAddress.getByName("localhost");		
+        InetAddress host = InetAddress.getByName("25.109.204.202");		
         int puerto = 135;	
         
-        byte[] buffer = msj.getBytes();
-
+        byte[] buffer = msj.getBytes();        
         DatagramPacket request = 
                 new DatagramPacket(buffer, buffer.length, host, puerto);
 
         socket.send(request);
+        System.out.println(request.getData());
     }
     
     public String receive() throws IOException

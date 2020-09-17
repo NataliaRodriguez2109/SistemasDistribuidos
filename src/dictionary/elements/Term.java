@@ -169,7 +169,7 @@ public class Term {
         }
     }
     
-    public void find(String ip){
+    public String find(String ip){
         Connection con = null;
 
         try {
@@ -183,14 +183,15 @@ public class Term {
             rs = pst.executeQuery();
 
             if (rs.next()) {
-                System.out.println(rs.getString("id") + " " + rs.getString("palabra") + " " + rs.getString("definicion"));
+                return rs.getString("id") + "-" + rs.getString("palabra") + ": " + rs.getString("definicion");
             } else {
-                JOptionPane.showMessageDialog(null, "Buscando en diccionarios anigos");
+                return  "Buscando en diccionarios anigos";
             }
 
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, "Error: " + e.getMessage());
+            return "Error: " + e.getMessage();
         }
+        
     }
    
     public String getWord() {
