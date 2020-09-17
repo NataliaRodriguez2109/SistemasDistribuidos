@@ -209,6 +209,7 @@ public class Term {
         } catch (Exception e) {
             return "Error7: " + e;
         }
+        return "Error: palabra no encontrada";
 
     }
 
