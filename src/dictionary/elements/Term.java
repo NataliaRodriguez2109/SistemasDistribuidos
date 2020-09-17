@@ -5,6 +5,7 @@
  */
 package dictionary.elements;
 
+import dictionary.client.Client;
 import dictionary.databases.Connection1;
 import java.sql.Array;
 import java.sql.Connection;
@@ -195,14 +196,16 @@ public class Term {
             if (rs.next()) {
                 return rs.getString("id") + "-" + rs.getString("palabra") + ": " + rs.getString("definicion");
             } else {
-                String[] pala = enlistarAmigos(ip);
-                for (int i = 0; i < pala.length; i++) {
-                    if (!pala[i].equals(origen)) {
-                        System.out.println("buscando en: " + pala[i] + "");
-                        String cadena = find(pala[i], p, ip);
-                        return cadena;
-                    }
-                }
+                Client c = new Client();
+                c.send(p,"25.109.204.202");
+//                String[] pala = enlistarAmigos(ip);
+//                for (int i = 0; i < pala.length; i++) {
+//                    if (!pala[i].equals(origen)) {
+//                        System.out.println("buscando en: " + pala[i] + "");
+//                        String cadena = find(pala[i], p, ip);
+//                        return cadena;
+//                    }
+//                }
             }
 
         } catch (Exception e) {

@@ -52,6 +52,32 @@ public class Client {
         socket.send(request);
 
     }
+    public void send(Paquete msj, String dir) throws UnknownHostException, IOException {
+        InetAddress host = InetAddress.getByName(dir);
+        int puerto = 135;
+
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        ObjectOutputStream out = null;
+        byte[] yourBytes;
+        try {
+            out = new ObjectOutputStream(bos);
+            out.writeObject(msj);
+            out.flush();
+            yourBytes = bos.toByteArray();
+        } finally {
+            try {
+                bos.close();
+            } catch (IOException ex) {
+                // ignore close exception
+            }
+        }
+        DatagramPacket request
+                = new DatagramPacket(yourBytes, yourBytes.length, host, puerto);
+
+        socket.send(request);
+
+    }
+    
 
     public String receive() throws IOException {
         byte[] buffer = new byte[1000];
