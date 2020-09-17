@@ -20,7 +20,7 @@ import javax.swing.JOptionPane;
 public class Term {
     String word;
     String definition;
-    String id = "0";
+    String id = null;
     Connection con;
     
     
@@ -37,7 +37,7 @@ public class Term {
     public void create(String ip){        
         try {
             con = conection.getConection(ip);
-            pst = con.prepareStatement("INSERT INTO TERMINOs (id, palabra, definicion) VALUES (?, ?, ?) ");
+            pst = con.prepareStatement("INSERT INTO TERMINOs (palabra, definicion) VALUES (?, ?) ");
             System.out.println("Por favor introduzca una palabra: ");
 
             Scanner scanW = new Scanner(System.in);
@@ -47,9 +47,10 @@ public class Term {
 
             Scanner scanD = new Scanner(System.in);
             definition = (scanD.nextLine());
-            pst.setString(1,"0");
-            pst.setString(2, word);
-            pst.setString(3, definition);
+            
+            //rs = con.g
+            pst.setString(1, word);
+            pst.setString(2, definition);
 
             int res = pst.executeUpdate();
 
@@ -73,12 +74,10 @@ public class Term {
 
             con = conection.getConection(ip);
 
-            pst = con.prepareStatement("SELECT * FROM terminos WHERE palabra = ?");
+            pst = con.prepareStatement("SELECT * FROM TERMINOS WHERE palabra = ?");
             System.out.println("Ingrese la palabra a editar: ");
             Scanner scanWU = new Scanner(System.in);
             String wordU = (scanWU.nextLine()); //Invocamos un método sobre un objeto Scanner
-
-            System.out.println("Por favor introduzca la palabra con la edición: ");
 
             pst.setString(1, wordU);
 
@@ -86,11 +85,8 @@ public class Term {
 
             if (rs.next()) {
                 id = rs.getString("id");
-            } else {
-                JOptionPane.showMessageDialog(null, "No se encotró la palabra en el diccionario");
-            }
-
-            pst = con.prepareStatement("UPDATE terminos SET palabra=?, definicion=? WHERE id=" + id);
+                 pst = con.prepareStatement("UPDATE terminos SET palabra=?, definicion=? WHERE id=" + id);
+            System.out.println("Por favor introduzca la palabra con la edición: ");
             Scanner scanW3 = new Scanner(System.in);
             word = (scanW3.nextLine()); //Invocamos un método sobre un objeto Scanner
 
@@ -109,6 +105,9 @@ public class Term {
                 else {
                     JOptionPane.showMessageDialog(null, "Error al editar Término");
                 }
+            } else {
+                JOptionPane.showMessageDialog(null, "No se encotró la palabra en el diccionario");
+            }
             
             con.close();
 
@@ -122,7 +121,7 @@ public class Term {
         try {
             con = conection.getConection(ip);
             st = con.createStatement();
-            rs = st.executeQuery("SELECT * FROM terminos");
+            rs = st.executeQuery("SELECT * FROM TERMINOS");
 
             while (rs.next()) {
                 System.out.println(rs.getInt("id") + " " + rs.getString("palabra") + " " + rs.getString("definicion"));
@@ -138,19 +137,31 @@ public class Term {
 
         try {
             con = conection.getConection(ip);
-            pst = con.prepareStatement("DELETE FROM terminos WHERE palabra=?");
-            System.out.println("Ingrese la palabra a eliminar: ");
-            Scanner scanW2 = new Scanner(System.in);
-            word = (scanW2.nextLine());  //Invocamos un método sobre un objeto Scanner
+            pst = con.prepareStatement("SELECT * FROM TERMINOS WHERE palabra = ?");
+            System.out.println("Ingrese la palabra a editar: ");
+            Scanner scanWU = new Scanner(System.in);
+            String word = (scanWU.nextLine()); //Invocamos un método sobre un objeto Scanner
 
             pst.setString(1, word);
 
-            int res = pst.executeUpdate();
-            if (res > 0) {
-                JOptionPane.showMessageDialog(null, "Término Eliminado");
-            } else {
-                JOptionPane.showMessageDialog(null, "Error al eliminar Término");
+            rs = pst.executeQuery();
+            
+            if(rs.next()){
+                pst = con.prepareStatement("DELETE FROM TERMINOS WHERE palabra=?");
+                pst.setString(1, word);
+
+                int res = pst.executeUpdate();
+
+                if (res > 0) {
+                    JOptionPane.showMessageDialog(null, "Término Eliminado");
+                } else {
+                    JOptionPane.showMessageDialog(null, "Error al eliminar Término");
+                }
             }
+            else {
+                JOptionPane.showMessageDialog(null, "No se encontró el término");
+            }
+ 
             con.close();
 
         } catch (Exception e) {
@@ -163,7 +174,7 @@ public class Term {
 
         try {
             con = conection.getConection(ip);
-            pst = con.prepareStatement("SELECT * FROM terminos WHERE palabra = ?");
+            pst = con.prepareStatement("SELECT * FROM TERMINOS WHERE palabra = ?");
             System.out.println("Ingrese la palabra a buscar: ");
             Scanner scanW4 = new Scanner(System.in);
             word = (scanW4.nextLine());  //Invocamos un método sobre un objeto Scanner
