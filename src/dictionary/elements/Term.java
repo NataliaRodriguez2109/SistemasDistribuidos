@@ -197,12 +197,11 @@ public class Term {
             } else {
                 String[] pala = enlistarAmigos(ip);
                 for (int i = 0; i < pala.length; i++) {
-                    if (pala[i] != origen) {
+                    if (!pala[i].equals(origen)) {
                         System.out.println("buscando en: " + pala[i] + "");
+                        String cadena = find(pala[i], p, ip);
+                        return cadena;
                     }
-                    String cadena = find(pala[i], p, ip);
-                    return cadena;
-
                 }
             }
 
