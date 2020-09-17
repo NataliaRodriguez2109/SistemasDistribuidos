@@ -26,7 +26,7 @@ public class Client {
     
     public void send(String msj) throws UnknownHostException, IOException
     {
-        InetAddress host = InetAddress.getByName("localhost");		
+        InetAddress host = InetAddress.getByName("25.109.206.221");		
         int puerto = 135;	
         
         byte[] buffer = msj.getBytes();
@@ -49,3 +49,5 @@ public class Client {
         return new String(request.getData()).trim();
     }
 }
+
+//25.109.206.221

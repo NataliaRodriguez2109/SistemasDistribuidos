@@ -49,6 +49,9 @@ public class DictionaryController {
                 term.find(ip);
                 answer = "Ok";
                 break;
+                
+            case "af":
+                break;
         }
         
         return answer;
